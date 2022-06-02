@@ -43,6 +43,7 @@ class ProductRepository implements ProductRepositoryInterface
      */
     public function getPopularProducts(): array
     {
-        return $this->productDatabase->executeQuery("SELECT * ...");
+        $popularProducts = $this->productDatabase->executeQuery("SELECT * ...");
+        return $popularProducts;
     }
 }
