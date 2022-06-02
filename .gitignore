@@ -1,0 +1,10 @@
+# PHPStorm files
+*.iml
+.idea
+/out/
+/import/
+
+# Other files
+.DS_Store
+/.env
+/vendor/
