@@ -4,12 +4,15 @@ use App\Application\Contract\ProductServiceInterface;
 use App\Application\Service\ProductService;
 use App\Domain\Contract\ProductRepositoryInterface;
 use App\Domain\Contract\ReviewRepositoryInterface;
+use App\Infrastructure\Cache\MemcachedCache;
+use App\Infrastructure\Contract\CacheInterface;
 use App\Infrastructure\Contract\ProductDatabaseInterface;
 use App\Infrastructure\Contract\ReviewGatewayInterface;
 use App\Infrastructure\Persistence\ProductDatabase;
 use App\Infrastructure\Gateway\ReviewGateway;
 use App\Infrastructure\Http\ProductListController;
 use App\Infrastructure\Http\ProductPageController;
+use App\Infrastructure\Repository\CachedProductRepository;
 use App\Infrastructure\Repository\ProductRepository;
 use App\Infrastructure\Repository\ReviewRepository;
 use DI\ContainerBuilder;
@@ -28,11 +31,16 @@ $dotenv->load();
 // Конфигурация и создание IoC-контейнера
 
 $definitions = [
-    ProductRepositoryInterface::class => autowire(ProductRepository::class),
+    ProductRepositoryInterface::class => autowire(CachedProductRepository::class)
+        ->constructorParameter(
+            'productRepository',
+            DI\get(ProductRepository::class)
+        ),
     ReviewRepositoryInterface::class => autowire(ReviewRepository::class),
     ProductServiceInterface::class => autowire(ProductService::class),
     ProductDatabaseInterface::class => autowire(ProductDatabase::class),
     ReviewGatewayInterface::class => autowire(ReviewGateway::class),
+    CacheInterface::class => autowire(MemcachedCache::class),
 ];
 
 $containerBuilder = new ContainerBuilder();
